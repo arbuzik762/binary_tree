@@ -167,24 +167,20 @@ int main() {
     tree.insert(60);
     tree.insert(80);
 
-    printf("In-order: ");
+    printf("Левое - узел - правое: ");
     tree.inOrder();
 
-    printf("Pre-order: ");
+    printf("Узел - левое - правое: ");
     tree.preOrder();
 
-    printf("Post-order: ");
+    printf("Левое - узел - правое: ");
     tree.postOrder();
 
-    printf("Contains 40: %s\n", tree.contains(40) ? "Yes" : "No");
-    printf("Contains 90: %s\n", tree.contains(90) ? "Yes" : "No");
+    printf("Значение 1: %s\n", tree.contains(10) ? "Есть" : "Нет");
+    printf("Значение 2: %s\n", tree.contains(90) ? "Есть" : "Нет");
 
-    printf("Size: %zu\n", tree.size());
-    printf("Height: %zu\n", tree.height());
-
-    tree.remove(20);
-    printf("After removing 20, in-order: ");
-    tree.inOrder();
+    printf("Кол-во узлов: %zu\n", tree.size());
+    printf("Высота дерева: %zu\n", tree.height());
 
     return 0;
 }
