@@ -1,186 +1,103 @@
-#include <cstdio>
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctime>
 
-template <typename T>
-class BinaryTree {
-private:
-    struct Node {
-        T data;
-        Node* left;
-        Node* right;
+typedef struct Node {
+    int value;
+    struct Node* left;
+    struct Node* right;
+} Node;
 
-        Node(const T& value) : data(value), left(nullptr), right(nullptr) {}
-    };
+// Создание нового узла
+Node* create_node(int value) {
+    Node* new_node = (Node*)malloc(sizeof(Node));
+    new_node->value = value;
+    new_node->left = NULL;
+    new_node->right = NULL;
+    return new_node;
+}
 
-    Node* root;
-
-    void clear(Node* node) {
-        if (node) {
-            clear(node->left);
-            clear(node->right);
-            delete node;
-        }
+// Рекурсивная вставка значения в дерево
+Node* insert(Node* root, int value) {
+    if (root == NULL) {
+        return create_node(value);
     }
-
-    Node* insert(Node* node, const T& value) {
-        if (!node) {
-            return new Node(value);
-        }
-        if (value < node->data) {
-            node->left = insert(node->left, value);
-        } else {
-            node->right = insert(node->right, value);
-        }
-        return node;
+    
+    if (value < root->value) {
+        root->left = insert(root->left, value);
+    } else if (value > root->value) {
+        root->right = insert(root->right, value);
     }
+    
+    return root;
+}
 
-    bool contains(Node* node, const T& value) const {
-        if (!node) return false;
-        if (node->data == value) return true;
-        return value < node->data ? contains(node->left, value) : contains(node->right, value);
+// Рекурсивный обход в прямом порядке (корень-лево-право)
+void pre_order(Node* root) {
+    if (root != NULL) {
+        printf("%d ", root->value);
+        pre_order(root->left);
+        pre_order(root->right);
     }
+}
 
-    void inOrder(Node* node) const {
-        if (!node) return;
-        inOrder(node->left);
-        printf("%d ", node->data);
-        inOrder(node->right);
+// Рекурсивный обход в симметричном порядке (лево-корень-право)
+void in_order(Node* root) {
+    if (root != NULL) {
+        in_order(root->left);
+        printf("%d ", root->value);
+        in_order(root->right);
     }
+}
 
-    void preOrder(Node* node) const {
-        if (!node) return;
-        printf("%d ", node->data);
-        preOrder(node->left);
-        preOrder(node->right);
+// Рекурсивный обход в обратном порядке (лево-право-корень)
+void post_order(Node* root) {
+    if (root != NULL) {
+        post_order(root->left);
+        post_order(root->right);
+        printf("%d ", root->value);
     }
+}
 
-    void postOrder(Node* node) const {
-        if (!node) return;
-        postOrder(node->left);
-        postOrder(node->right);
-        printf("%d ", node->data);
+// Рекурсивная очистка дерева
+void clear_tree(Node* root) {
+    if (root != NULL) {
+        clear_tree(root->left);
+        clear_tree(root->right);
+        free(root);
     }
-
-    size_t size(Node* node) const {
-        return node ? 1 + size(node->left) + size(node->right) : 0;
-    }
-
-    size_t height(Node* node) const {
-        if (!node) return 0;
-        size_t leftHeight = height(node->left);
-        size_t rightHeight = height(node->right);
-        return 1 + (leftHeight > rightHeight ? leftHeight : rightHeight);
-    }
-
-    Node* findMin(Node* node) const {
-        while (node && node->left) {
-            node = node->left;
-        }
-        return node;
-    }
-
-    Node* remove(Node* node, const T& value) {
-        if (!node) return nullptr;
-
-        if (value < node->data) {
-            node->left = remove(node->left, value);
-        } else if (value > node->data) {
-            node->right = remove(node->right, value);
-        } else {
-            if (!node->left && !node->right) {
-                delete node;
-                return nullptr;
-            } else if (!node->left) {
-                Node* temp = node->right;
-                delete node;
-                return temp;
-            } else if (!node->right) {
-                Node* temp = node->left;
-                delete node;
-                return temp;
-            } else {
-                Node* minNode = findMin(node->right);
-                node->data = minNode->data;
-                node->right = remove(node->right, minNode->data);
-            }
-        }
-        return node;
-    }
-
-public:
-    BinaryTree() : root(nullptr) {}
-
-    ~BinaryTree() {
-        clear(root);
-    }
-
-    BinaryTree(const BinaryTree&) = delete;
-    BinaryTree& operator=(const BinaryTree&) = delete;
-
-    void insert(const T& value) {
-        root = insert(root, value);
-    }
-
-    void remove(const T& value) {
-        root = remove(root, value);
-    }
-
-    bool contains(const T& value) const {
-        return contains(root, value);
-    }
-
-    void inOrder() const {
-        inOrder(root);
-        printf("\n");
-    }
-
-    void preOrder() const {
-        preOrder(root);
-        printf("\n");
-    }
-
-    void postOrder() const {
-        postOrder(root);
-        printf("\n");
-    }
-
-    size_t size() const {
-        return size(root);
-    }
-
-    size_t height() const {
-        return height(root);
-    }
-
-    bool empty() const {
-        return !root;
-    }
-};
+}
 
 int main() {
-    BinaryTree<int> tree;
-
-    tree.insert(50);
-    tree.insert(30);
-    tree.insert(70);
-    tree.insert(20);
-    tree.insert(40);
-    tree.insert(60);
-    tree.insert(80);
-
-    printf("Левое - узел - правое: ");
-    tree.inOrder();
-
+    Node* root = NULL;
+    int i, count = 10;
+    int min = 1, max = 100;
+    
+    srand(time(NULL));
+    
+    printf("Элементы: ");
+    for (i = 0; i < count; i++) {
+        int value = min + rand() % (max - min + 1);
+        printf("%d ", value);
+        root = insert(root, value);
+    }
+    printf("\n\n");
+    
+    // Обходы дерева
     printf("Узел - левое - правое: ");
-    tree.preOrder();
-
+    pre_order(root);
+    printf("\n");
+    
     printf("Левое - узел - правое: ");
-    tree.postOrder();
-
-    printf("Значение 1: %s\n", tree.contains(10) ? "Есть" : "Нет");
-    printf("Значение 2: %s\n", tree.contains(90) ? "Есть" : "Нет");
-
-    printf("Кол-во узлов: %zu\n", tree.size());
-    printf("Высота дерева: %zu\n", tree.height());
-
+    in_order(root);
+    printf("\n");
+    
+    printf("Левое - правое - узел: ");
+    post_order(root);
+    printf("\n");
+    
+    // Очистка памяти
+    clear_tree(root);
+    
     return 0;
 }
