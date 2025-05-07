@@ -8,7 +8,6 @@ typedef struct Node {
     struct Node* right;
 } Node;
 
-// Создание нового узла
 Node* create_node(int value) {
     Node* new_node = (Node*)malloc(sizeof(Node));
     new_node->value = value;
@@ -17,7 +16,6 @@ Node* create_node(int value) {
     return new_node;
 }
 
-// Рекурсивная вставка значения в дерево
 Node* insert(Node* root, int value) {
     if (root == NULL) {
         return create_node(value);
@@ -32,7 +30,6 @@ Node* insert(Node* root, int value) {
     return root;
 }
 
-// Рекурсивный обход в прямом порядке (корень-лево-право)
 void pre_order(Node* root) {
     if (root != NULL) {
         printf("%d ", root->value);
@@ -41,7 +38,6 @@ void pre_order(Node* root) {
     }
 }
 
-// Рекурсивный обход в симметричном порядке (лево-корень-право)
 void in_order(Node* root) {
     if (root != NULL) {
         in_order(root->left);
@@ -49,8 +45,6 @@ void in_order(Node* root) {
         in_order(root->right);
     }
 }
-
-// Рекурсивный обход в обратном порядке (лево-право-корень)
 void post_order(Node* root) {
     if (root != NULL) {
         post_order(root->left);
@@ -59,7 +53,6 @@ void post_order(Node* root) {
     }
 }
 
-// Рекурсивная очистка дерева
 void clear_tree(Node* root) {
     if (root != NULL) {
         clear_tree(root->left);
@@ -83,7 +76,6 @@ int main() {
     }
     printf("\n\n");
     
-    // Обходы дерева
     printf("Узел - левое - правое: ");
     pre_order(root);
     printf("\n");
@@ -96,7 +88,6 @@ int main() {
     post_order(root);
     printf("\n");
     
-    // Очистка памяти
     clear_tree(root);
     
     return 0;
